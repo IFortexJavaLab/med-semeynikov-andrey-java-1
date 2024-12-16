@@ -41,7 +41,7 @@ public class AuthController {
     this.jwtTokenProvider = jwtTokenProvider;
   }
 
-  // TODO handle error valid
+  // fixme handle error valid
   @PostMapping("/register")
   public ResponseEntity<RegistrationResponse> addNewUser(
       @RequestBody @Valid RegistrationRequest request) {
@@ -53,7 +53,7 @@ public class AuthController {
   public ResponseEntity<LoginResponse> login(@RequestBody @Valid LoginRequest loginRequest) {
     LoginResponse response = loginService.authenticateUser(loginRequest);
 
-    // TODO add secure for https or other profile
+    // fixme add secure for https or other profile
     ResponseCookie refreshTokenCookie =
         ResponseCookie.from("refreshToken", response.getRefreshToken())
             .httpOnly(true)
@@ -79,7 +79,7 @@ public class AuthController {
     return ResponseEntity.ok(response);
   }
 
-  // TODO Move to the api gateway
+  // fixme Move to the api gateway
   @GetMapping("/validate")
   public ResponseEntity<String> validateToken(@RequestParam("token") String token) {
     boolean isValid = jwtTokenProvider.validateJwtToken(token);

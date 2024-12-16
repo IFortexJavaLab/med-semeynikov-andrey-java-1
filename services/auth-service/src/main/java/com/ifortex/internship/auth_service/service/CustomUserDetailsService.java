@@ -27,7 +27,7 @@ public class CustomUserDetailsService implements UserDetailsService {
             .orElseThrow(
                 () ->
                     new UsernameNotFoundException(
-                        "User Not Found with email: " + email)); // TODO refactor error
+                        "User Not Found with email: " + email)); // fixme refactor error
 
     return new UserDetailsImpl(user);
   }

@@ -34,7 +34,8 @@ public class LoginService {
             new UsernamePasswordAuthenticationToken(
                 loginRequest.getEmail(), loginRequest.getPassword()));
     UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-    // TODO refactor mock method
+    // fixme refactor mock method
+    //  add email verification
     if (true) {
       // Mock: отправка кода 2FA
       String mockCode = "123456";

@@ -26,7 +26,7 @@ public class RegistrationService {
   @Transactional
   public RegistrationResponse register(RegistrationRequest request) {
     if (userRepository.existsByEmail(request.getEmail())) {
-      // TODO refactor error
+      // fixme refactor error
       throw new IllegalArgumentException("Email is already registered.");
     }
 

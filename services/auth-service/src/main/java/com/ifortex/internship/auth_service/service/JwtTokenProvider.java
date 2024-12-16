@@ -58,7 +58,7 @@ public class JwtTokenProvider {
 
   public boolean validateJwtToken(String authToken) {
 
-    // TODO refactor method
+    // fixme refactor method
     try {
       Jwts.parser().verifyWith(getSigningKey()).build().parseSignedClaims(authToken);
       return true;

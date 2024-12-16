@@ -12,4 +12,3 @@ import lombok.Setter;
 public class TokenRefreshRequest {
   private String refreshToken;
 }
-// TODO refactor this class

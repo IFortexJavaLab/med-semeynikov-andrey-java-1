@@ -63,12 +63,12 @@ public class RefreshTokenService {
 
     User user = token.getUser();
 
-    // TODO refactor error
+    // fixme refactor error
     if (user == null) {
       throw new RuntimeException("User not found for this refresh token");
     }
 
-    // TODO maybe refactor this method
+    // fixme maybe refactor this method
     //  the same block in the login service line 40
     Authentication authentication =
         authenticationManager.authenticate(
