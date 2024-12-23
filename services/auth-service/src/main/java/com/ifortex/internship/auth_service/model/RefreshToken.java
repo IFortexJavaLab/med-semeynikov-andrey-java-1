@@ -1,4 +1,4 @@
-package com.ifortex.internship.auth_service.entity;
+package com.ifortex.internship.auth_service.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

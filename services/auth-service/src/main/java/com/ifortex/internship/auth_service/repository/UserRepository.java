@@ -1,6 +1,6 @@
 package com.ifortex.internship.auth_service.repository;
 
-import com.ifortex.internship.auth_service.entity.User;
+import com.ifortex.internship.auth_service.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

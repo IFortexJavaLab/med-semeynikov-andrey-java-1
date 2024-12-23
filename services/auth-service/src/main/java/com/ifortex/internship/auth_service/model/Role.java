@@ -1,4 +1,4 @@
-package com.ifortex.internship.auth_service.entity;
+package com.ifortex.internship.auth_service.model;
 
 public enum Role {
   SUPER_ADMIN,
