@@ -1,4 +1,4 @@
-package com.ifortex.internship.auth_service.dto;
+package com.ifortex.internship.auth_service.dto.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -21,7 +21,7 @@ public class RegistrationRequest {
   @NotBlank
   @Size(min = 8, message = "Password must be at least 8 characters long.")
   @Pattern(
-      regexp = "^(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&#]+$",
+      regexp = "^(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&#])[A-Za-z\\d@$!%*?&#]+$",
       message =
           "Password must contain at least 1 uppercase letter, 1 number, and 1 special character.")
   private String password;

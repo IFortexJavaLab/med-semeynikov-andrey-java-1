@@ -1,4 +1,4 @@
-package com.ifortex.internship.auth_service.dto;
+package com.ifortex.internship.auth_service.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,6 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class TokenRefreshRequest {
-  private String refreshToken;
+public class RegistrationResponse {
+  private String message;
+  private Long userId;
 }
