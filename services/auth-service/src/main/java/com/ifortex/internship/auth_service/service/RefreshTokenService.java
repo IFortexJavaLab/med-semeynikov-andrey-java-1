@@ -1,99 +1,63 @@
 package com.ifortex.internship.auth_service.service;
 
-import com.ifortex.internship.auth_service.dto.TokenRefreshResponse;
-import com.ifortex.internship.auth_service.entity.RefreshToken;
-import com.ifortex.internship.auth_service.entity.User;
-import com.ifortex.internship.auth_service.repository.RefreshTokenRepository;
-import com.ifortex.internship.auth_service.repository.UserRepository;
-import java.time.Instant;
-import java.util.Optional;
-import java.util.UUID;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import com.ifortex.internship.auth_service.exception.custom.RefreshTokenExpiredException;
+import com.ifortex.internship.auth_service.exception.custom.RefreshTokenNotFoundException;
+import com.ifortex.internship.auth_service.exception.custom.UserNotFoundException;
+import com.ifortex.internship.auth_service.model.RefreshToken;
 
-@Service
-public class RefreshTokenService {
-  private final RefreshTokenRepository refreshTokenRepository;
-  private final UserRepository userRepository;
-  private final JwtTokenProvider jwtTokenProvider;
-  private final AuthenticationManager authenticationManager;
+/**
+ * Service interface for managing refresh tokens.
+ *
+ * <p>Provides functionality for creating, verifying, and deleting refresh tokens, as well as
+ * retrieving tokens by their value.
+ */
+public interface RefreshTokenService {
 
-  @Value("${app.refreshTokenExpirationMs}")
-  private int refreshTokenExpirationS;
+  /**
+   * Creates a new refresh token for the specified user.
+   *
+   * <p>Deletes any existing tokens for the user before creating a new one.
+   *
+   * @param userId the ID of the user for whom the refresh token is created
+   * @return the created {@link RefreshToken}
+   * @throws UserNotFoundException if no user is found with the given ID
+   */
+  RefreshToken createRefreshToken(Long userId);
 
-  public RefreshTokenService(
-      RefreshTokenRepository refreshTokenRepository,
-      UserRepository userRepository,
-      JwtTokenProvider jwtTokenProvider,
-      AuthenticationManager authenticationManager) {
-    this.refreshTokenRepository = refreshTokenRepository;
-    this.userRepository = userRepository;
-    this.jwtTokenProvider = jwtTokenProvider;
-    this.authenticationManager = authenticationManager;
-  }
+  /**
+   * Verifies the expiration date of the given refresh token.
+   *
+   * <p>If the token has expired, it is deleted, and a {@link RefreshTokenExpiredException} is
+   * thrown.
+   *
+   * @param refreshToken the RefreshToken to verify
+   * @return the verified RefreshToken if it is still valid
+   * @throws RefreshTokenExpiredException if the token has expired
+   */
+  RefreshToken verifyExpiration(RefreshToken refreshToken);
 
-  @Transactional
-  public RefreshToken createRefreshToken(Long userId) {
-    User user =
-        userRepository
-            .findById(userId)
-            .orElseThrow(() -> new IllegalArgumentException("User not found"));
+  /**
+   * Deletes all refresh tokens associated with the specified user.
+   *
+   * @param userId the ID of the user whose tokens should be deleted
+   */
+  void deleteTokensByUserId(Long userId);
 
-    deleteTokensByUserId(userId);
+  /**
+   * Retrieves a refresh token by its value.
+   *
+   * <p>Throws an exception if the token is not found or invalid.
+   *
+   * @param token the token value to search for
+   * @return the found RefreshToken
+   * @throws RefreshTokenNotFoundException if the token is not found
+   */
+  RefreshToken findByToken(String token);
 
-    RefreshToken refreshToken = new RefreshToken();
-    refreshToken.setUser(user);
-    refreshToken.setToken(UUID.randomUUID().toString());
-    refreshToken.setExpiryDate(Instant.now().plusSeconds(refreshTokenExpirationS));
-
-    return refreshTokenRepository.save(refreshToken);
-  }
-
-  public TokenRefreshResponse refreshAccessToken(String refreshToken) {
-    RefreshToken token =
-        refreshTokenRepository
-            .findByToken(refreshToken)
-            .orElseThrow(() -> new RuntimeException("Invalid refresh token"));
-
-    verifyExpiration(token);
-
-    User user = token.getUser();
-
-    // fixme refactor error
-    if (user == null) {
-      throw new RuntimeException("User not found for this refresh token");
-    }
-
-    // fixme maybe refactor this method
-    //  the same block in the login service line 40
-    Authentication authentication =
-        authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword()));
-
-    String newAccessToken = jwtTokenProvider.generateAccessToken(authentication);
-
-    return new TokenRefreshResponse(newAccessToken);
-  }
-
-  public void verifyExpiration(RefreshToken refreshToken) {
-    boolean tokenIsExpired = refreshToken.getExpiryDate().isBefore(Instant.now());
-    if (tokenIsExpired) {
-      refreshTokenRepository.delete(refreshToken);
-      // TODO refactor error
-      throw new RuntimeException("Refresh token is expired. Please login again.");
-    }
-  }
-
-  @Transactional
-  public void deleteTokensByUserId(Long userId) {
-    refreshTokenRepository.deleteByUserId(userId);
-  }
-
-  public Optional<RefreshToken> findByToken(String token) {
-    return refreshTokenRepository.findByToken(token);
-  }
+  /**
+   * Deletes the specified refresh token.
+   *
+   * @param token the RefreshToken to delete
+   */
+  void deleteToken(RefreshToken token);
 }

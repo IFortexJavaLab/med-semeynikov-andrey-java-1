@@ -1,7 +1,7 @@
 package com.ifortex.internship.auth_service.service;
 
-import com.ifortex.internship.auth_service.config.UserDetailsImpl;
-import com.ifortex.internship.auth_service.entity.User;
+import com.ifortex.internship.auth_service.model.User;
+import com.ifortex.internship.auth_service.model.UserDetailsImpl;
 import com.ifortex.internship.auth_service.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -10,25 +10,23 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 @Component
-public class CustomUserDetailsService implements UserDetailsService {
+public class UserDetailsServiceImpl implements UserDetailsService {
 
   private final UserRepository userRepository;
 
-  public CustomUserDetailsService(UserRepository userRepository) {
+  public UserDetailsServiceImpl(UserRepository userRepository) {
     this.userRepository = userRepository;
   }
 
   @Override
   @Transactional
-  public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+  public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
     User user =
         userRepository
-            .findByEmail(email)
+            .findByEmail(username)
             .orElseThrow(
-                () ->
-                    new UsernameNotFoundException(
-                        "User Not Found with email: " + email)); // fixme refactor error
+                () -> new UsernameNotFoundException("User not found with email: " + username));
 
-    return new UserDetailsImpl(user);
+    return UserDetailsImpl.build(user);
   }
 }

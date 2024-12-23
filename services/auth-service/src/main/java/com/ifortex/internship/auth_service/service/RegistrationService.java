@@ -1,45 +1,35 @@
 package com.ifortex.internship.auth_service.service;
 
-import com.ifortex.internship.auth_service.dto.RegistrationRequest;
-import com.ifortex.internship.auth_service.dto.RegistrationResponse;
-import com.ifortex.internship.auth_service.entity.Role;
-import com.ifortex.internship.auth_service.entity.User;
-import com.ifortex.internship.auth_service.repository.UserRepository;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import com.ifortex.internship.auth_service.dto.request.RegistrationRequest;
+import com.ifortex.internship.auth_service.dto.response.RegistrationResponse;
+import com.ifortex.internship.auth_service.exception.custom.EmailAlreadyRegistered;
+import com.ifortex.internship.auth_service.exception.custom.PasswordMismatchException;
+import com.ifortex.internship.auth_service.model.User;
 
-import java.time.LocalDateTime;
-import java.util.Set;
+/**
+ * Service interface for handling user registration.
+ *
+ * <p>Provides functionality for registering new users and validating registration data.
+ */
+public interface RegistrationService {
 
-@Service
-public class RegistrationService {
-
-  private final UserRepository userRepository;
-  private final PasswordEncoder passwordEncoder;
-
-  public RegistrationService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
-    this.userRepository = userRepository;
-    this.passwordEncoder = passwordEncoder;
-  }
-
-  @Transactional
-  public RegistrationResponse register(RegistrationRequest request) {
-    if (userRepository.existsByEmail(request.getEmail())) {
-      // fixme refactor error
-      throw new IllegalArgumentException("Email is already registered.");
-    }
-
-    String hashedPassword = passwordEncoder.encode(request.getPassword());
-
-    User user = new User();
-    user.setEmail(request.getEmail());
-    user.setPassword(hashedPassword);
-    user.setRoles(Set.of(Role.NON_SUBSCRIBED_USER));
-    user.setCreatedAt(LocalDateTime.now());
-    user.setUpdatedAt(LocalDateTime.now());
-    userRepository.save(user);
-
-    return new RegistrationResponse("Registration successful.", user.getId());
-  }
+  /**
+   * Registers a new user in the system.
+   *
+   * <p>This method performs the following steps:
+   *
+   * <ul>
+   *   <li>Checks if the email is already registered.
+   *   <li>Validates that the password matches its confirmation.
+   *   <li>Encodes the password.
+   *   <li>Creates and saves a new {@link User} entity in the database.
+   * </ul>
+   *
+   * @param request the {@link RegistrationRequest} containing the user's email, password, and
+   *     confirmation password
+   * @return a {@link RegistrationResponse} containing the success message and user ID
+   * @throws EmailAlreadyRegistered if the email is already registered
+   * @throws PasswordMismatchException if the password does not match its confirmation
+   */
+  RegistrationResponse register(RegistrationRequest request);
 }
