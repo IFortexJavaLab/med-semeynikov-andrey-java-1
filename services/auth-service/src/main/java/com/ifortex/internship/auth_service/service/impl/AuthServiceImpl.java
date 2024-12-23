@@ -87,7 +87,7 @@ public class AuthServiceImpl implements AuthService {
 
   public AuthResponse logoutUser() {
     Object principle = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    Long userId = null;
+    Long userId;
     if (!principle.toString().equals("anonymousUser")) {
       userId = ((UserDetailsImpl) principle).getId();
       refreshTokenService.deleteTokensByUserId(userId);
