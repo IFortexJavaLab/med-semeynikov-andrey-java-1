@@ -1,0 +1,13 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5433/auth_db
+    username: ifortex
+    password: ifortex
+
+
+logging:
+  level:
+    root: INFO
+    org:
+      hibernate:
+        SQL: INFO
