@@ -3,6 +3,7 @@ package com.ifortex.internship.auth_service.config;
 import com.ifortex.internship.auth_service.filter.AuthTokenFilter;
 import com.ifortex.internship.auth_service.service.TokenService;
 import com.ifortex.internship.auth_service.service.UserDetailsServiceImpl;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,16 +22,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
+@RequiredArgsConstructor
 public class AuthConfig {
 
   private final TokenService tokenService;
   private final UserDetailsServiceImpl userDetailsService;
 
-  public AuthConfig(TokenService tokenService, UserDetailsServiceImpl userDetailsService) {
-      this.tokenService = tokenService;
-      this.userDetailsService = userDetailsService;
-  }
-  
   @Bean
   public AuthTokenFilter authenticationJwtTokenFilter() {
     return new AuthTokenFilter(tokenService, userDetailsService);

@@ -3,9 +3,9 @@ package com.ifortex.internship.auth_service.service.impl;
 import com.ifortex.internship.auth_service.service.CookieService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseCookie;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component
+@Service
 public class CookieServiceImpl implements CookieService {
 
   @Value("${app.jwtExpirationMs}")

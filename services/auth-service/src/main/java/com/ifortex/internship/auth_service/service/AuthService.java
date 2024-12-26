@@ -1,8 +1,13 @@
 package com.ifortex.internship.auth_service.service;
 
 import com.ifortex.internship.auth_service.dto.request.LoginRequest;
+import com.ifortex.internship.auth_service.dto.request.RegistrationRequest;
 import com.ifortex.internship.auth_service.dto.response.AuthResponse;
+import com.ifortex.internship.auth_service.dto.response.RegistrationResponse;
+import com.ifortex.internship.auth_service.exception.custom.EmailAlreadyRegistered;
+import com.ifortex.internship.auth_service.exception.custom.PasswordMismatchException;
 import com.ifortex.internship.auth_service.exception.custom.UserNotAuthenticatedException;
+import com.ifortex.internship.auth_service.model.User;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -13,6 +18,26 @@ import org.springframework.security.core.context.SecurityContextHolder;
  * for secure storage of access and refresh tokens.
  */
 public interface AuthService {
+
+  /**
+   * Registers a new user in the system.
+   *
+   * <p>This method performs the following steps:
+   *
+   * <ul>
+   *   <li>Checks if the email is already registered.
+   *   <li>Validates that the password matches its confirmation.
+   *   <li>Encodes the password.
+   *   <li>Creates and saves a new {@link User} entity in the database.
+   * </ul>
+   *
+   * @param request the {@link RegistrationRequest} containing the user's email, password, and
+   *     confirmation password
+   * @return a {@link RegistrationResponse} containing the success message and user ID
+   * @throws EmailAlreadyRegistered if the email is already registered
+   * @throws PasswordMismatchException if the password does not match its confirmation
+   */
+  RegistrationResponse register(RegistrationRequest request);
 
   /**
    * Authenticates a user based on their login credentials.

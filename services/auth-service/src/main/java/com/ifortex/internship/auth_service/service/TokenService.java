@@ -3,7 +3,6 @@ package com.ifortex.internship.auth_service.service;
 import com.ifortex.internship.auth_service.dto.response.CookieTokensResponse;
 import com.ifortex.internship.auth_service.exception.custom.TokensRefreshException;
 import com.ifortex.internship.auth_service.model.RefreshToken;
-import com.ifortex.internship.auth_service.model.Role;
 import com.ifortex.internship.auth_service.model.User;
 import java.util.List;
 
@@ -19,10 +18,10 @@ public interface TokenService {
    * Generates a JWT access token for a {@link User} based on their email and roles.
    *
    * @param email the email of the User
-   * @param roles the list of {@link Role} assigned to the User
+   * @param roles the list of roles assigned to the User
    * @return the generated JWT access token as a String
    */
-  String generateAccessToken(String email, List<Role> roles);
+  String generateAccessToken(String email, List<String> roles);
 
   /**
    * Refreshes the access and refresh tokens for a User.
@@ -60,4 +59,7 @@ public interface TokenService {
    * @return the username (email) extracted from the token
    */
   String getUsernameFromToken(String token);
+
+  // todo add javadoc
+  List<String> getRolesFromToken(String jwt);
 }

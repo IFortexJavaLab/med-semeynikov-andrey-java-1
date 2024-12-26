@@ -6,11 +6,11 @@ import com.ifortex.internship.auth_service.exception.custom.RefreshTokenExpiredE
 import com.ifortex.internship.auth_service.exception.custom.TokensRefreshException;
 import com.ifortex.internship.auth_service.exception.custom.UserNotFoundForRefreshTokenException;
 import com.ifortex.internship.auth_service.model.RefreshToken;
-import com.ifortex.internship.auth_service.model.Role;
 import com.ifortex.internship.auth_service.model.User;
 import com.ifortex.internship.auth_service.service.CookieService;
 import com.ifortex.internship.auth_service.service.RefreshTokenService;
 import com.ifortex.internship.auth_service.service.TokenService;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
@@ -20,7 +20,6 @@ import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.crypto.SecretKey;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -45,11 +44,11 @@ public class TokenServiceImpl implements TokenService {
     this.cookieService = cookieService;
   }
 
-  public String generateAccessToken(String email, List<Role> roles) {
+  public String generateAccessToken(String email, List<String> roles) {
     String token =
         Jwts.builder()
             .subject(email)
-            .claim("roles", roles.stream().map(Role::name).collect(Collectors.toList()))
+            .claim("roles", roles)
             .issuedAt(new Date(System.currentTimeMillis()))
             .expiration(new Date(System.currentTimeMillis() + jwtExpirationMs))
             .signWith(getSigningKey())
@@ -72,7 +71,9 @@ public class TokenServiceImpl implements TokenService {
         throw new UserNotFoundForRefreshTokenException("User not found for this refresh token");
       }
 
-      String newAccessToken = generateAccessToken(user.getEmail(), user.getRoles());
+      List<String> roles = user.getRoles().stream().map(role -> role.getName().name()).toList();
+
+      String newAccessToken = generateAccessToken(user.getEmail(), roles);
       log.debug("Access token refreshed successfully for user: {}", user.getEmail());
 
       RefreshToken newRefreshToken = createRefreshToken(user.getId());
@@ -129,5 +130,15 @@ public class TokenServiceImpl implements TokenService {
         .parseSignedClaims(token)
         .getPayload()
         .getSubject();
+  }
+
+  public List<String> getRolesFromToken(String token) {
+    final Claims claims =
+        Jwts.parser().verifyWith(getSigningKey()).build()
+                .parseSignedClaims(token).getPayload();
+    List<String> roles = claims.get("roles", List.class);
+    log.debug("Got roles from token: {}", roles.toString());
+    System.out.println(roles);
+    return roles;
   }
 }

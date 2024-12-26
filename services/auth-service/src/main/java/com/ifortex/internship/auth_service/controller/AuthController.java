@@ -6,7 +6,6 @@ import com.ifortex.internship.auth_service.dto.response.AuthResponse;
 import com.ifortex.internship.auth_service.dto.response.CookieTokensResponse;
 import com.ifortex.internship.auth_service.dto.response.RegistrationResponse;
 import com.ifortex.internship.auth_service.service.AuthService;
-import com.ifortex.internship.auth_service.service.RegistrationService;
 import com.ifortex.internship.auth_service.service.TokenService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -23,13 +22,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/auth")
 public class AuthController {
 
-  private final RegistrationService registrationService;
   private final AuthService authService;
   private final TokenService tokenService;
 
-  public AuthController(
-      RegistrationService service, AuthService authService, TokenService tokenService) {
-    this.registrationService = service;
+  public AuthController(AuthService authService, TokenService tokenService) {
     this.authService = authService;
     this.tokenService = tokenService;
   }
@@ -40,7 +36,7 @@ public class AuthController {
 
     log.info("Received registration request for email: {}", request.getEmail());
 
-    RegistrationResponse response = registrationService.register(request);
+    RegistrationResponse response = authService.register(request);
 
     return ResponseEntity.ok(response);
   }

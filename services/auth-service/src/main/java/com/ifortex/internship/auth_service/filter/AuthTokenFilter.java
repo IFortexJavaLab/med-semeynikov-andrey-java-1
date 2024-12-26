@@ -17,8 +17,10 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 @Slf4j
 public class AuthTokenFilter extends OncePerRequestFilter {
-  private final TokenService tokenService;
+  
+  private static final int BEARER_PREFIX_LENGTH = 7;
 
+  private final TokenService tokenService;
   private final UserDetailsServiceImpl userDetailsService;
 
   public AuthTokenFilter(TokenService tokenService, UserDetailsServiceImpl userDetailsService) {
@@ -36,6 +38,8 @@ public class AuthTokenFilter extends OncePerRequestFilter {
       String jwt = parseJwt(request);
       if (jwt != null && tokenService.isValid(jwt)) {
         String username = tokenService.getUsernameFromToken(jwt);
+
+        // feature get roles from jwt token ton from db
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
@@ -56,6 +60,8 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 
   private String parseJwt(HttpServletRequest request) {
     String headerAuth = request.getHeader("Authorization");
-    return headerAuth != null && headerAuth.startsWith("Bearer ") ? headerAuth.substring(7) : null;
+    return headerAuth != null && headerAuth.startsWith("Bearer ")
+        ? headerAuth.substring(BEARER_PREFIX_LENGTH)
+        : null;
   }
 }
