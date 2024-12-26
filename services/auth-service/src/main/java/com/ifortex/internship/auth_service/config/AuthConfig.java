@@ -2,7 +2,7 @@ package com.ifortex.internship.auth_service.config;
 
 import com.ifortex.internship.auth_service.filter.AuthTokenFilter;
 import com.ifortex.internship.auth_service.service.TokenService;
-import com.ifortex.internship.auth_service.service.UserDetailsServiceImpl;
+import com.ifortex.internship.auth_service.service.impl.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

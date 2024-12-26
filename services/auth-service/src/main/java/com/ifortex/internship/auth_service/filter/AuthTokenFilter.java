@@ -1,7 +1,7 @@
 package com.ifortex.internship.auth_service.filter;
 
 import com.ifortex.internship.auth_service.service.TokenService;
-import com.ifortex.internship.auth_service.service.UserDetailsServiceImpl;
+import com.ifortex.internship.auth_service.service.impl.UserDetailsServiceImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,7 +17,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 @Slf4j
 public class AuthTokenFilter extends OncePerRequestFilter {
-  
+
   private static final int BEARER_PREFIX_LENGTH = 7;
 
   private final TokenService tokenService;

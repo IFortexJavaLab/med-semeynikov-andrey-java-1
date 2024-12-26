@@ -1,4 +1,4 @@
-package com.ifortex.internship.auth_service.service;
+package com.ifortex.internship.auth_service.service.impl;
 
 import com.ifortex.internship.auth_service.model.User;
 import com.ifortex.internship.auth_service.model.UserDetailsImpl;

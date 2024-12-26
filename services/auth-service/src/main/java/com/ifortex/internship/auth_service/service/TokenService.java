@@ -60,6 +60,6 @@ public interface TokenService {
    */
   String getUsernameFromToken(String token);
 
-  // todo add javadoc
+  // feature add javadoc and approve method
   List<String> getRolesFromToken(String jwt);
 }

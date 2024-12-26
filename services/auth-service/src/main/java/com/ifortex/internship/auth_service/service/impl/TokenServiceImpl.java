@@ -138,7 +138,6 @@ public class TokenServiceImpl implements TokenService {
                 .parseSignedClaims(token).getPayload();
     List<String> roles = claims.get("roles", List.class);
     log.debug("Got roles from token: {}", roles.toString());
-    System.out.println(roles);
     return roles;
   }
 }
